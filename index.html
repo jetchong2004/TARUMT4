@@ -50,9 +50,35 @@
     </div>
   </div>
 
-  <script>
-    https://script.google.com/macros/s/AKfycbzNzwthmRCgvlE5nqmMO1i9QH44Cw26XQ_lk-7yjBwtsgtpIRNpQTZYpW8PwZL6qZCBNw/exec
+<script>
+  const endpoint = "https://script.google.com/macros/s/AKfycbzNzwthmRCgvlE5nqmMO1i9QH44Cw26XQ_lk-7yjBwtsgtpIRNpQTZYpW8PwZL6qZCBNw/exec";
 
+  async function fetchData() {
+    try {
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      updateTicker(data);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      document.getElementById("ticker").textContent = "Error fetching data. Please check your connection.";
+    }
+  }
+
+  function updateTicker(data) {
+    const ticker = document.getElementById("ticker");
+    ticker.innerHTML = "";
+
+    data.forEach((society) => {
+      const item = document.createElement("div");
+      item.className = "item " + (society["Up/Down"] === "up" ? "up" : "down");
+      item.textContent = `[ ${society["Society Name"]} ] RM ${Number(society["Total Members"]).toFixed(2)} ${society["Up/Down"] === "up" ? "▲" : "▼"}`;
+      ticker.appendChild(item);
+    });
+  }
+
+  fetchData();
+  setInterval(fetchData, 10000); // Refresh every 10 seconds
+</script>
 
     async function fetchData() {
       try {
